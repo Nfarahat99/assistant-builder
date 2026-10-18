@@ -17,6 +17,7 @@
 اقرأ `package.json` ← `assistantTemplate.onboardingContract` وقارنه برقم العقد في `SKILL.md` (`onboardingContract = 1`). **غير موجود = 0** (أقدم من المهارة):
 
 - **أقل من عقد المهارة (أو غير موجود):** قل «نسخة مساعدك أقدم من المهارة. خلنا نحدّثها أول». بموافقته (AskUserQuestion، لأنه يغيّر ملفات):
+  - **قبل أي سحب أو دمج:** شغّل `git status --porcelain` — لازم يكون فاضي. لو فيه تعديلات غير محفوظة: اشرح له بجملة بسيطة واسأله (AskUserQuestion) يحفظها (commit) أو يوقفها مؤقتاً (stash) قبل ما نكمّل. لا تتخلص من أي تعديل أبداً.
   - **عبر المزامنة** (لو `TEMPLATE_SYNC_TOKEN` مضاف — تحقق: `gh secret list --repo <owner>/<name>` يظهر فيه `TEMPLATE_SYNC_TOKEN`):
     1. `gh workflow run template-sync`، وانتظر انتهاء التشغيل (`gh run watch`).
     2. المالك يدمج الـ PR «[template] تحديثات من القالب» (أو أنت `gh pr merge` بموافقته).

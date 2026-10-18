@@ -1,6 +1,6 @@
 ---
 name: build-assistant
-description: يبني لك مساعدك الشخصي (تيليجرام وواتساب) من الصفر أو يكمّل إعداده — مقابلة خطوة خطوة تنشئ المستودع وتجهّز الحسابات والاستضافة. Use when the user wants to build, set up or continue setting up their personal assistant ("ابنِ لي مساعدي", "build my personal assistant", "كمّل إعداد مساعدي").
+description: يبني لك مساعدك الشخصي (تيليجرام وواتساب) من الصفر أو يكمّل إعداده — مقابلة خطوة خطوة تنشئ المستودع وتجهّز الحسابات والاستضافة. Use when the user wants to build, set up or continue setting up their personal assistant ("ابنِ لي مساعدي", "build my personal assistant", "كمّل إعداد مساعدي"), or asks to link WhatsApp ("جهّز إعدادات ربط واتساب" / "prepare WhatsApp linking")..
 argument-hint: "[مسار مجلد اختياري]"
 ---
 
@@ -35,6 +35,8 @@ argument-hint: "[مسار مجلد اختياري]"
 | داخل ريبو مساعد | `git rev-parse --show-toplevel` ينجح ويوجد `assistant.config.example.json` في جذره | تتحقق من العقد (القسم التالي) ثم [الاستئناف](references/02-resume.md) |
 | داخل ريبو git ثاني | ينجح لكن بدون `assistant.config.example.json` | تسأل: ننشئ المساعد في مجلد فرعي جديد؟ |
 | مجلد عادي | ما فيه git | تسأل: «عندك مساعد على GitHub من قبل؟» — نعم: نسخه ثم كمّل كأنك داخل ريبو مساعد؛ لا: إنشاء مستودع جديد من القالب (بتاريخ مشترك) ثم [الأسئلة](references/03-questions.md) |
+
+**طلب «جهّز إعدادات ربط واتساب»:** لو المالك قالها (اللوحة تطلب منه يقولها)، سوّ فحص الحالة وفحص العقد فقط، ثم روح مباشرة إلى [references/whatsapp-later.md](references/whatsapp-later.md) بدون إعادة المقابلة.
 
 ## فحص العقد
 

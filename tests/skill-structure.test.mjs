@@ -30,6 +30,7 @@ test('SKILL.md frontmatter, size and contract line', () => {
   assert.ok(fm, 'frontmatter')
   assert.match(fm, /^name: build-assistant$/m)
   assert.match(fm, /^description: .*(مساعد).*(assistant)/mi)
+  assert.match(fm, /جهّز إعدادات ربط واتساب/)
   assert.doesNotMatch(fm, /disable-model-invocation:\s*true/)
   assert.ok(skill.split('\n').length < 500, 'SKILL.md under 500 lines')
   assert.match(skill, /\*\*عقد المقابلة المدعوم:\*\* onboardingContract = 1/)
