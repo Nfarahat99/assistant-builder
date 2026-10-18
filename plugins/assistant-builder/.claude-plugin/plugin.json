@@ -1,0 +1,7 @@
+{
+  "name": "assistant-builder",
+  "description": "Builds your personal assistant (Telegram/WhatsApp) from Nfarahat99/assistant-template through a guided interview.",
+  "author": { "name": "Nfarahat99" },
+  "homepage": "https://github.com/Nfarahat99/assistant-builder",
+  "license": "MIT"
+}

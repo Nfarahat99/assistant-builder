@@ -1,0 +1,12 @@
+{
+  "name": "assistant-builder",
+  "owner": { "name": "Nfarahat99" },
+  "metadata": { "description": "ابنِ مساعدك الشخصي على تيليجرام وواتساب — Build your personal assistant" },
+  "plugins": [
+    {
+      "name": "assistant-builder",
+      "source": "./plugins/assistant-builder",
+      "description": "مقابلة تبني لك مساعدك الشخصي من القالب خطوة خطوة"
+    }
+  ]
+}
