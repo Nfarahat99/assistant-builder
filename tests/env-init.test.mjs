@@ -1,8 +1,8 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { mkdtempSync, writeFileSync, readFileSync, existsSync } from 'node:fs'
+import { mkdtempSync, writeFileSync, readFileSync, existsSync, symlinkSync } from 'node:fs'
 import { tmpdir } from 'node:os'
-import { join } from 'node:path'
+import { join, dirname } from 'node:path'
 import { execFileSync, spawnSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 import { GENERATED, BLANK, initEnv, addKeys, regenKey } from '../plugins/assistant-builder/skills/build-assistant/scripts/env-init.mjs'
@@ -21,7 +21,7 @@ test('init on empty: generates the four secrets as hex of the right length, adds
 })
 
 test('init keeps existing values, comments and unrelated lines; fills only empty generated keys', () => {
-  const before = '﻿# my notes\r\nTELEGRAM_BOT_TOKEN=123:abc\r\nSECRETS_KEY=\r\nWEBHOOK_SECRET=   # fill me\r\nDASHBOARD_PASSWORD=keepme\r\nOTHER=x'
+  const before = '\uFEFF# my notes\r\nTELEGRAM_BOT_TOKEN=123:abc\r\nSECRETS_KEY=\r\nWEBHOOK_SECRET=   # fill me\r\nDASHBOARD_PASSWORD=keepme\r\nOTHER=x'
   const { text, changed } = initEnv(before)
   assert.deepEqual(changed.sort(), ['SECRETS_KEY', 'TELEGRAM_LINK_CODE', 'WEBHOOK_SECRET'].sort())
   assert.equal(val(text, 'TELEGRAM_BOT_TOKEN'), '123:abc')
@@ -70,6 +70,17 @@ test('CLI refuses to write when .env is not git-ignored', () => {
   const r = run(dir)
   assert.equal(r.status, 2)
   assert.equal(existsSync(join(dir, '.env')), false)
+})
+
+test('CLI runs when reached through a directory link (junction/symlink)', () => {
+  const dir = tempRepo(true)
+  const linkRoot = mkdtempSync(join(tmpdir(), 'env-init-link-'))
+  const link = join(linkRoot, 'scripts')
+  symlinkSync(dirname(SCRIPT), link, process.platform === 'win32' ? 'junction' : 'dir')
+  const r = spawnSync(process.execPath, [join(link, 'env-init.mjs')], { cwd: dir, encoding: 'utf8' })
+  assert.equal(r.status, 0, r.stderr)
+  assert.equal(r.stdout.trim(), 'OK .env: TELEGRAM_LINK_CODE, DASHBOARD_PASSWORD, SECRETS_KEY, WEBHOOK_SECRET')
+  assert.equal(existsSync(join(dir, '.env')), true)
 })
 
 test('CLI writes .env and never prints a generated value', () => {

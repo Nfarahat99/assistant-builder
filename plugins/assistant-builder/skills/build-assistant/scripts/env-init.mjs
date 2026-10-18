@@ -6,10 +6,10 @@
  *   node env-init.mjs --add K…     يضيف خانات فاضية (K=) لو مو موجودة
  *   node env-init.mjs --regen K    قيمة جديدة لسر مولّد واحد
  */
-import { readFileSync, writeFileSync, existsSync } from 'node:fs'
+import { readFileSync, writeFileSync, existsSync, realpathSync } from 'node:fs'
 import { randomBytes } from 'node:crypto'
 import { execFileSync } from 'node:child_process'
-import { pathToFileURL } from 'node:url'
+import { fileURLToPath } from 'node:url'
 
 /** الأسرار المولّدة: الاسم ← عدد البايتات (القيمة hex بضعف الطول). TELEGRAM_LINK_CODE = 24 خانة تناسب رابط تيليجرام المباشر */
 export const GENERATED = { TELEGRAM_LINK_CODE: 12, DASHBOARD_PASSWORD: 16, SECRETS_KEY: 32, WEBHOOK_SECRET: 32 }
@@ -19,7 +19,7 @@ export const BLANK = ['TELEGRAM_BOT_TOKEN', 'GEMINI_API_KEY', 'GITHUB_TOKEN']
 const KEY = /^[A-Z][A-Z0-9_]*$/
 const hex = (n) => randomBytes(n).toString('hex')
 const toLines = (text) => {
-  const t = text.replace(/^﻿/, '').replace(/\r\n/g, '\n').trimEnd()
+  const t = text.replace(/^\uFEFF/, '').replace(/\r\n/g, '\n').trimEnd()
   return t ? t.split('\n') : []
 }
 const find = (lines, k) => lines.findIndex((l) => l.startsWith(k + '='))
@@ -94,4 +94,13 @@ function main(argv) {
   console.log('OK .env: ' + (result.changed.join(', ') || '-'))
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) main(process.argv.slice(2))
+// Compare real paths: Node resolves junctions/symlinks in import.meta.url but not in argv[1].
+function isMainModule() {
+  try {
+    return realpathSync(fileURLToPath(import.meta.url)) === realpathSync(process.argv[1])
+  } catch {
+    return false
+  }
+}
+
+if (isMainModule()) main(process.argv.slice(2))
