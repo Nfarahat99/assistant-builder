@@ -1,0 +1,31 @@
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: "0 4 * * 0"   # أسبوعياً: يكشف أي تغيير في القالب كسر العقد
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node --test "tests/*.test.mjs"
+      - uses: actions/checkout@v4
+        with:
+          repository: Nfarahat99/assistant-template
+          path: .template
+      - run: npm ci
+        working-directory: .template
+      - name: Template contract
+        working-directory: .template
+        run: TEMPLATE_DIR=. node --import tsx --test "$GITHUB_WORKSPACE/tests/contract/template-contract.mjs"
+      - name: Plugin manifest
+        run: npx -y @anthropic-ai/claude-code plugin validate .
