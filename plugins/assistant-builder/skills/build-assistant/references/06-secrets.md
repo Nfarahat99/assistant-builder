@@ -43,7 +43,7 @@ node "${CLAUDE_SKILL_DIR}/scripts/env-init.mjs"
 
 إضافة أسرار المستودع، ونوع توكن GitHub، وربط Railway تعتمد على **صاحب المستودع**. لا تفترض — تحقق:
 
-1. تأكد إن `gh` مثبت ومسجّل دخول: `gh --version` ثم `gh auth status` (التفاصيل في [المتطلبات](00-prereqs.md)). لو مو مثبت: ويندوز `winget install --id GitHub.cli -e`، ماك `brew install gh`. لو مو مسجّل: المالك يكتب في نافذة طرفية ثانية `gh auth login --web --git-protocol https` (قل له: «هذا من الأمرين الوحيدين اللي بتكتبهم بنفسك»).
+1. تأكد إن `gh` مثبت ومسجّل دخول: `gh --version` ثم `gh auth status` (التفاصيل وصلاحية `workflow` في [المتطلبات](00-prereqs.md)). لو مو مثبت: ويندوز `winget install --id GitHub.cli -e`، ماك `brew install gh`. لو مو مسجّل: المالك يكتب في نافذة طرفية ثانية `gh auth login --web --git-protocol https --scopes workflow` (قل له: «هذا من الأمرين الوحيدين اللي بتكتبهم بنفسك»).
 2. شغّل: `gh repo view <owner>/<name> --json owner,viewerPermission,isInOrganization` وخذ منه `owner.login` و`viewerPermission`. وخذ اسم حسابه: `gh api user -q .login`.
    - لو `gh` ما اشتغل أبداً: اسأله عن اسم حسابه في GitHub (نص)، واعتبره صاحب المستودع فقط لو يطابق `<owner>`.
 3. **`viewerPermission` = `ADMIN`** (المستودع باسمه أو هو مدير فيه): كمّل عادي — هو يضيف الأسرار (٤.٥–٤.٦) ويربط Railway ([الخطوة ٦](08-railway.md)) بنفسه، وتوكن GitHub من النوع Fine-grained.
@@ -89,7 +89,7 @@ node "${CLAUDE_SKILL_DIR}/scripts/env-init.mjs"
      - افتح https://github.com/settings/tokens/new?scopes=repo,workflow&description=assistant (النطاقان `repo` و`workflow` مختاران مسبقاً).
      - **Expiration:** سنة ← **Generate token** ← ينسخه ويلصقه في `.env` بعد `GITHUB_TOKEN=`.
      - نبّهه: التوكن الـ Classic يوصل لكل مستودعاته — يحفظه في `.env` وRailway فقط.
-2. **`TEMPLATE_SYNC_TOKEN`** (سر في GitHub لمزامنة تحديثات القالب أسبوعياً): القالب عام، فيكفي توكن **Fine-grained** على ريبوك وحده: https://github.com/settings/personal-access-tokens/new ← Only select repositories ← ريبو المساعد ← Permissions: Contents وPull requests وWorkflows ← Read and write. لو الريبو باسم شخص ثاني ([٤.٤](06-secrets.md)): Classic بـ `repo` و`workflow`. يُضاف من نفس صفحة الأسرار (Name: `TEMPLATE_SYNC_TOKEN`). لغير المبرمج: لو صعب، أجّله ونبّهه إنه بدونه ما توصله تحديثات القالب تلقائياً (أو تسويه الجهة اللي زوّدته بالقالب).
+2. **`TEMPLATE_SYNC_TOKEN`** (سر في GitHub لمزامنة تحديثات القالب أسبوعياً): القالب عام، فيكفي توكن **Fine-grained** على مستودعك وحده (الصلاحيات وشروطها في `docs/TEMPLATE.md` القسم ٤): https://github.com/settings/personal-access-tokens/new ← Only select repositories ← مستودع المساعد ← Permissions: Contents وPull requests وWorkflows ← Read and write. لو المستودع باسم شخص ثاني ([٤.٤](06-secrets.md)): Classic بـ `repo` و`workflow`. يُضاف من نفس صفحة الأسرار (Name: `TEMPLATE_SYNC_TOKEN`). لغير المبرمج: لو صعب، أجّله ونبّهه إنه بدونه ما توصله تحديثات القالب تلقائياً (أو تسويه الجهة اللي زوّدته بالقالب).
 
 ## ٤.٧ فحص محلي
 

@@ -60,7 +60,7 @@ test('repo step covers the three starting states, shared history and the contrac
   const repo = ref('01-repo.md')
   for (const s of ['gh repo create', '--private', 'git clone https://github.com/Nfarahat99/assistant-template.git',
     'git remote rename origin template', 'git remote add origin', 'git push -u origin main', 'assistantTemplate', 'onboardingContract',
-    'gh workflow run template-sync', 'claude plugin marketplace update assistant-builder', '/reload-plugins', 'Use this template'])
+    'gh workflow run template-sync', 'assistant.config.example.json', 'gh secret list', 'git pull origin', 'عندك مساعد على GitHub من قبل؟', 'claude plugin marketplace update assistant-builder', '/reload-plugins', 'Use this template'])
     assert.ok(repo.includes(s), `01-repo.md missing: ${s}`)
   assert.match(repo, /مجلد فرعي/)
 })
@@ -73,4 +73,10 @@ test('content carried over from the Phase 2 interview', () => {
     /GATEWAY_PROVISION_KEY/, /\$\{\{Postgres\.DATABASE_URL\}\}/, /FILES_DIR/, /AskUserQuestion/,
   ]) assert.match(all, re)
   assert.match(ref('04-config.md'), /## قالب الإعدادات[\s\S]*?```json\n/)
+})
+
+test('gh login always requests the workflow scope', () => {
+  assert.match(all, /gh auth login --web --git-protocol https --scopes workflow/)
+  assert.match(all, /gh auth refresh -h github.com -s workflow/)
+  assert.doesNotMatch(all, /gh auth login --web --git-protocol https(?! --scopes workflow)/)
 })
