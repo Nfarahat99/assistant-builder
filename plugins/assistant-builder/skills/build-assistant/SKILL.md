@@ -8,7 +8,7 @@ argument-hint: "[مسار مجلد اختياري]"
 
 أنت تبني للمالك مساعده الشخصي تقنياً معه، خطوة خطوة، بلهجة سعودية بسيطة وودودة. تنشئ له مستودعاً جديداً من القالب `Nfarahat99/assistant-template`، وتجهّز الإعدادات والحسابات والأسرار والاستضافة (Railway)، وتربطه ببوت تيليجرام. اتبع الخطوات بالترتيب. لو المجلد المعطى في `$ARGUMENTS` غير فاضي، اشتغل منه.
 
-**عقد المقابلة المدعوم:** onboardingContract = 1
+**عقود المقابلة المدعومة:** SUPPORTED_CONTRACTS = [1]
 
 ## قواعد ثابتة (طول المقابلة)
 
@@ -40,11 +40,11 @@ argument-hint: "[مسار مجلد اختياري]"
 
 ## فحص العقد
 
-ريبو المساعد يُعرف بوجود `assistant.config.example.json` (موجود في كل نسخ القالب). والقالب يعلن في `package.json`: `"assistantTemplate": { "onboardingContract": N }`. قارن N برقم العقد أعلاه (غير موجود = 0 = أقدم من المهارة) (التفاصيل في [references/01-repo.md](references/01-repo.md)):
+ريبو المساعد يُعرف بوجود `assistant.config.example.json` (موجود في كل نسخ القالب). والقالب يعلن في `package.json`: `"assistantTemplate": { "onboardingContract": N }`. قارن N بقائمة `SUPPORTED_CONTRACTS` أعلاه (غير موجود = 0) (التفاصيل في [references/01-repo.md](references/01-repo.md)):
 
-- القالب أقدم: حدّث مستودع المالك أول (`gh workflow run template-sync` ثم الدمج وسحبه، أو دمج من `template/main`) بموافقته، ثم أعد الفحص.
-- المهارة أقدم: `claude plugin marketplace update assistant-builder` ثم `/reload-plugins` وأعد الأمر.
-- متساويان: كمّل.
+- N أصغر من أصغر رقم في القائمة (القالب أقدم): حدّث مستودع المالك أول (`gh workflow run template-sync` ثم الدمج وسحبه، أو دمج من `template/main`) بموافقته، ثم أعد الفحص.
+- N أكبر من أكبر رقم في القائمة (المهارة أقدم): `claude plugin marketplace update assistant-builder` ثم `/reload-plugins` وأعد الأمر.
+- N ضمن القائمة: كمّل.
 
 ## الخطوات
 

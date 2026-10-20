@@ -18,6 +18,7 @@ node "${CLAUDE_SKILL_DIR}/scripts/env-init.mjs"
 - لو احتجت **قيمة جديدة** لواحد من الأسرار المولّدة (الفحص قال `SECRETS_KEY` غير صالح، أو `TELEGRAM_LINK_CODE` فيه رموز ما يقبلها الرابط): بدّل `SECRETS_KEY` باسم المتغير المطلوب (المسموح: `TELEGRAM_LINK_CODE`، `DASHBOARD_PASSWORD`، `SECRETS_KEY`، `WEBHOOK_SECRET`):
   `node "${CLAUDE_SKILL_DIR}/scripts/env-init.mjs" --regen SECRETS_KEY`
   (لو المساعد منشور: القيمة الجديدة لازم تنحط في Railway ← Variables بعد.)
+  - **انتبه مع `SECRETS_KEY` بالذات:** المساعد يشفّر فيه بيانات محفوظة (مثل مفاتيح جلسة واتساب). لو بدّلته على مساعد شغّال، البيانات المشفّرة القديمة **ما تنقرى** وبيحتاج يعيد ربط واتساب وغيره. استخدم `--regen SECRETS_KEY` فقط في **تثبيت جديد** (ما انربط فيه شي بعد)، أو بعد **موافقة المالك الصريحة** (AskUserQuestion) بعد ما تشرح له هالأثر بجملة بسيطة.
 - **فتح الملف للمالك** (كل ما احتاج يلصق شي): ويندوز `notepad .env`، ماك `open -e .env`. قل له: «الصق القيمة بعد علامة `=` في السطر المطلوب، بدون مسافات، واحفظ (Ctrl+S أو ⌘S) وسكّر الملف».
 - قل له: **`TELEGRAM_LINK_CODE` و`DASHBOARD_PASSWORD` موجودة في هذا الملف — ياخذ منها نسخة في مكان آمن** (يحتاج `DASHBOARD_PASSWORD` للوحة، و`TELEGRAM_LINK_CODE` احتياطاً لو ما اشتغل رابط الربط). الملف يبقى على جهازه وما يُرفع لـ GitHub.
 

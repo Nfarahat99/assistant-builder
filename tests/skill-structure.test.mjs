@@ -33,7 +33,8 @@ test('SKILL.md frontmatter, size and contract line', () => {
   assert.match(fm, /جهّز إعدادات ربط واتساب/)
   assert.doesNotMatch(fm, /disable-model-invocation:\s*true/)
   assert.ok(skill.split('\n').length < 500, 'SKILL.md under 500 lines')
-  assert.match(skill, /\*\*عقد المقابلة المدعوم:\*\* onboardingContract = 1/)
+  assert.match(skill, /\*\*عقود المقابلة المدعومة:\*\* SUPPORTED_CONTRACTS = \[\d+(, \d+)*\]/)
+  assert.doesNotMatch(all, /onboardingContract = \d/, 'one source of truth: SUPPORTED_CONTRACTS')
 })
 
 test('every reference file is linked from SKILL.md and every link resolves', () => {
@@ -64,6 +65,29 @@ test('repo step covers the three starting states, shared history and the contrac
     'gh workflow run template-sync', 'assistant.config.example.json', 'gh secret list', 'git pull origin', 'عندك مساعد على GitHub من قبل؟', 'claude plugin marketplace update assistant-builder', '/reload-plugins', 'Use this template'])
     assert.ok(repo.includes(s), `01-repo.md missing: ${s}`)
   assert.match(repo, /مجلد فرعي/)
+  assert.match(repo, /SUPPORTED_CONTRACTS/)
+})
+
+test('template update explains unrelated histories instead of forcing them', () => {
+  const repo = ref('01-repo.md')
+  assert.match(repo, /refusing to merge unrelated histories/)
+  assert.match(repo, /git merge-base HEAD template\/main/)
+  assert.match(repo, /لا تستخدم `--allow-unrelated-histories`/)
+  assert.doesNotMatch(repo, /git merge[^\n`]*--allow-unrelated-histories/)
+})
+
+test('regenerating SECRETS_KEY warns about stored encrypted data', () => {
+  const sec = ref('06-secrets.md')
+  assert.match(sec, /--regen SECRETS_KEY[\s\S]{0,600}(مشفّرة|مشفرة)/)
+  assert.match(sec, /موافقة المالك الصريحة/)
+})
+
+test('repo has an MIT LICENSE matching plugin.json', () => {
+  const pj = JSON.parse(read(join(ROOT, 'plugins/assistant-builder/.claude-plugin/plugin.json')))
+  assert.equal(pj.license, 'MIT')
+  const lic = read(join(ROOT, 'LICENSE'))
+  assert.match(lic, /^MIT License/)
+  assert.match(lic, /Copyright \(c\) 2026 Nfarahat99/)
 })
 
 test('content carried over from the Phase 2 interview', () => {
