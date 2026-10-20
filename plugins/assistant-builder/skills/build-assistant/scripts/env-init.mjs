@@ -28,7 +28,7 @@ const hex = (n) => randomBytes(n).toString('hex')
  * الأسطر الجديدة تاخذ نهاية الملف السائدة (CRLF لو موجودة، وإلا LF).
  */
 function parse(text) {
-  const bom = text.startsWith('﻿') ? '﻿' : ''
+  const bom = text.startsWith('\uFEFF') ? '\uFEFF' : ''
   const body = text.slice(bom.length)
   const parts = body.split(/(\r?\n)/)
   const lines = []
