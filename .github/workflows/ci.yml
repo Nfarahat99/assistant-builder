@@ -25,7 +25,6 @@ jobs:
       - run: npm ci
         working-directory: .template
       - name: Template contract
-        working-directory: .template
-        run: TEMPLATE_DIR=. node --import tsx --test "$GITHUB_WORKSPACE/tests/contract/template-contract.mjs"
+        run: npm run test:contract -- .template
       - name: Plugin manifest
         run: npx -y @anthropic-ai/claude-code plugin validate .

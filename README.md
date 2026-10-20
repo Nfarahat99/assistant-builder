@@ -79,3 +79,29 @@ claude plugin marketplace update assistant-builder
 Then `/reload-plugins`.
 
 Template: https://github.com/Nfarahat99/assistant-template
+
+---
+
+## Development
+
+No dependencies: ESM `.mjs` files and `node:test` only (Node 20+).
+
+```
+npm test                                   # skill structure + env-init unit and CLI tests
+npm run test:contract -- ../assistant-template
+# or: TEMPLATE_DIR=../assistant-template npm run test:contract
+```
+
+The contract test runs inside the template folder with the template's own `tsx` (run `npm ci` there first). A relative template path resolves against the folder you ran `npm` from. It checks that everything the skill relies on still exists in the template: required config keys (read from the template's `ProfileSchema`), npm scripts, doctor messages the skill quotes, and the onboarding contract number.
+
+### Bumping the onboarding contract
+
+`SKILL.md` lists the template contracts the skill supports: `SUPPORTED_CONTRACTS = [N]`. The template declares its own in `package.json` → `assistantTemplate.onboardingContract`. The contract test passes when the template's number is in that list. To move from N to N+1:
+
+1. **Skill first:** set `SUPPORTED_CONTRACTS = [N, N+1]` and make the references handle both. Merge and publish.
+2. **Then the template:** bump `onboardingContract` to N+1.
+3. **Later (optional):** once no one is left on N, drop it: `SUPPORTED_CONTRACTS = [N+1]`.
+
+Landing the template bump first would make every installed skill tell owners their skill is out of date until the skill catches up.
+
+License: MIT (see `LICENSE`).

@@ -14,9 +14,9 @@
 
 ### داخل ريبو مساعد: فحص العقد
 
-اقرأ `package.json` ← `assistantTemplate.onboardingContract` وقارنه برقم العقد في `SKILL.md` (`onboardingContract = 1`). **غير موجود = 0** (أقدم من المهارة):
+اقرأ `package.json` ← `assistantTemplate.onboardingContract` (سمّه N) وقارنه بقائمة العقود المدعومة في `SKILL.md` (`SUPPORTED_CONTRACTS`). **غير موجود = 0**:
 
-- **أقل من عقد المهارة (أو غير موجود):** قل «نسخة مساعدك أقدم من المهارة. خلنا نحدّثها أول». بموافقته (AskUserQuestion، لأنه يغيّر ملفات):
+- **N أصغر من أصغر رقم في `SUPPORTED_CONTRACTS` (أو غير موجود):** قل «نسخة مساعدك أقدم من المهارة. خلنا نحدّثها أول». بموافقته (AskUserQuestion، لأنه يغيّر ملفات):
   - **قبل أي سحب أو دمج:** شغّل `git status --porcelain` — لازم يكون فاضي. لو فيه تعديلات غير محفوظة: اشرح له بجملة بسيطة واسأله (AskUserQuestion) يحفظها (commit) أو يوقفها مؤقتاً (stash) قبل ما نكمّل. لا تتخلص من أي تعديل أبداً.
   - **عبر المزامنة** (لو `TEMPLATE_SYNC_TOKEN` مضاف — تحقق: `gh secret list --repo <owner>/<name>` يظهر فيه `TEMPLATE_SYNC_TOKEN`):
     1. `gh workflow run template-sync`، وانتظر انتهاء التشغيل (`gh run watch`).
@@ -24,10 +24,14 @@
     3. `git pull origin <default_branch>` ثم `npm ci`.
     4. أعد فحص العقد.
   - **يدوياً** (ما فيه توكن، أو المالك مبرمج): `git fetch template main && git merge template/main` (لو ما فيه remote `template`: `git remote add template https://github.com/Nfarahat99/assistant-template.git`).
+    - **لو طلع `fatal: refusing to merge unrelated histories`** (أو فشلت المزامنة بنفس السبب): تأكد بـ `git merge-base HEAD template/main` — لو ما طبع شي (فاضي) فمستودعه ما يشارك القالب تاريخه (غالباً انعمل بزر **Use this template**). **لا تستخدم `--allow-unrelated-histories`** من نفسك: يدمج تاريخين ما بينهم أصل مشترك، فيطلع تعارض في أغلب الملفات ويمكن يضيع شي من تعديلاته. وقّف وقل له بهالمعنى:
+      > «مستودعك انعمل من القالب بطريقة ما تحفظ الرابط بينه وبين القالب، فما أقدر أجيب التحديثات تلقائياً بأمان. ما تغيّر شي عندك وكل شي محفوظ. الخطوة الجاية: كلّم الجهة اللي زوّدتك بالقالب (المسؤول عن القالب) وقل له: "مستودعي ما يشارك القالب تاريخه وأبي أحدّثه" — هو يرتّب لك طريقة النقل الصحيحة.»
+
+      ثم وقّف خطوة التحديث هنا (لا تكمّل المقابلة على نسخة أقدم من المهارة).
     - عند التعارض: في ملفات الهوية فقط (`assistant.config.json` و`knowledge/owner.md` و`projects.json` و`README.md`) خذ نسخة المالك (نفس قاعدة `template-sync.yml`). أي تعارض ثاني: وقّف واشرح له.
     - ثم `npm ci`، وأعد فحص العقد، ثم ارفع (`git push origin <default_branch>`) بموافقته (AskUserQuestion).
-- **أكبر من عقد المهارة:** قل «المهارة عندك أقدم من مستودعك». شغّل `claude plugin marketplace update assistant-builder` ثم قل للمالك يكتب `/reload-plugins` وأعد الأمر.
-- **مساوي:** كمّل إلى [الاستئناف](02-resume.md).
+- **N أكبر من أكبر رقم في `SUPPORTED_CONTRACTS`:** قل «المهارة عندك أقدم من مستودعك». شغّل `claude plugin marketplace update assistant-builder` ثم قل للمالك يكتب `/reload-plugins` وأعد الأمر.
+- **N ضمن `SUPPORTED_CONTRACTS`:** كمّل إلى [الاستئناف](02-resume.md).
 
 ### داخل ريبو git ثاني
 
